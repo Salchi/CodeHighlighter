@@ -48,7 +48,7 @@ namespace SourceCollectorWPF
 
             foreach (var pattern in PatternToArray(string.IsNullOrEmpty(searchPattern) ? "*" : searchPattern))
             {
-                foreach (string file in Directory.GetFiles(path, pattern, SearchOption.AllDirectories))
+                foreach (string file in Directory.EnumerateFiles(path, pattern, SearchOption.AllDirectories))
                 {
                     if (skipPattern.Length > 0 && !skipPatterns.Any(x => file.Contains(x)))
                     {
