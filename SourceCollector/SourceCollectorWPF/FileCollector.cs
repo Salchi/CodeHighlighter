@@ -39,28 +39,20 @@ namespace SourceCollectorWPF
         private ICollection<string> GetAllFilesIn(string path, string searchPattern, string skipPattern)
         {
             var files = new List<string>();
-
-            var searchPatternToUse = string.IsNullOrEmpty(searchPattern) ? "*" : searchPattern;
-
-            var searchPatterns = PatternToArray(searchPatternToUse);
-            var skipPatterns = PatternToArray(string.IsNullOrEmpty(skipPattern) ? string.Empty : skipPattern);
-
-            var dirs = Directory.GetDirectories(path, "*", SearchOption.AllDirectories).ToList();
-            if (Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
-                dirs.Add(path);
+                return files;
             }
 
-            foreach (string directory in dirs)
+            var skipPatterns = PatternToArray(string.IsNullOrEmpty(skipPattern) ? string.Empty : skipPattern);
+
+            foreach (var pattern in PatternToArray(string.IsNullOrEmpty(searchPattern) ? "*" : searchPattern))
             {
-                foreach (var pattern in searchPatterns)
+                foreach (string file in Directory.GetFiles(path, pattern, SearchOption.AllDirectories))
                 {
-                    foreach (string file in Directory.GetFiles(directory, pattern))
+                    if (skipPattern.Length > 0 && !skipPatterns.Any(x => file.Contains(x)))
                     {
-                        if (skipPattern.Length > 0 && !skipPatterns.Any(x => file.Contains(x)))
-                        {
-                            files.Add(file);
-                        }
+                        files.Add(file);
                     }
                 }
             }
