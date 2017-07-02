@@ -5,15 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SourceCollectorWPF.Views"
         mc:Ignorable="d"
-        Title="MainWindow" MinHeight="280" Height="280" Width="525">
+        Title="MainWindow" MinHeight="320" Height="320" Width="525">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition/>
             <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -36,7 +37,8 @@
         <TextBox Grid.Row="3" Grid.Column="1" Margin="10" Text="{Binding OutputFile}"/>
         <Button Grid.Row="3" Grid.Column="2" Content="Browse" Margin="10" Click="OutputFileBrowseButton_Click"/>
 
-        <Label Grid.Row="4" Grid.ColumnSpan="3" Content="{Binding Status, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold"/>
-        <Button Grid.Row="5" Grid.ColumnSpan="3" Margin="20" Content="Start" Click="StartButton_Click"/>
+        <ProgressBar Grid.Row="4" Grid.ColumnSpan="3"  Margin="20,10,20,10" Value="{Binding Progess, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="20"/>
+        <Label Grid.Row="5" Grid.ColumnSpan="3"  Margin="20,10,20,10" Content="{Binding Status, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold"/>
+        <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="20,0,20,15" Content="Start" Click="StartButton_Click" Height="20" IsEnabled="{Binding IsStartButtonEnabled}"/>
     </Grid>
 </Window>

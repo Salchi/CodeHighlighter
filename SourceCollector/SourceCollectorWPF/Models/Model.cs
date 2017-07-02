@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace SourceCollectorWPF.Models
 {
@@ -42,6 +43,15 @@ namespace SourceCollectorWPF.Models
             }
         }
 
+        private double progess;
+        public double Progess {
+            get { return progess; }
+            set {
+                progess = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string status;
         public string Status {
             get { return status; }
@@ -51,6 +61,14 @@ namespace SourceCollectorWPF.Models
             }
         }
 
+        private bool isStartButtonEnabled;
+        public bool IsStartButtonEnabled {
+            get { return isStartButtonEnabled; }
+            set {
+                isStartButtonEnabled = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

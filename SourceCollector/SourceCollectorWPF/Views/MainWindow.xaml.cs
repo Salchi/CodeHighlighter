@@ -9,7 +9,7 @@ namespace SourceCollectorWPF.Views
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IProgress<double>
     {
         private Model model;
         public MainWindow()
@@ -17,22 +17,35 @@ namespace SourceCollectorWPF.Views
             InitializeComponent();
             model = new Model()
             {
-                SkipPattern = "bootstrap|jquery"
+                SkipPattern = "bootstrap|jquery",
+                IsStartButtonEnabled = true
             };
             DataContext = model;
         }
 
         private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
+            model.IsStartButtonEnabled = false;
+            model.Progess = 0.0;
+            model.Status = "";
+
             try
             {
-                var numberOfFiles = await new FileHandler().CreateHighlightedHtmlOfContents(model.SourceDirectory, model.SearchPattern, model.SkipPattern, model.OutputFile);
-                model.Status = $"Copied content of {numberOfFiles} files to '{model.OutputFile}'";
+                await new FileHandler().CreateHighlightedHtmlOfContentsAsync(model.SourceDirectory, model.SearchPattern,
+                    model.SkipPattern, model.OutputFile, this);
+
+                model.Status = "Finsihed!";
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                model.Status = ex.Message;
+                model.Status = "Finsihed with an error.";
             }
+            model.IsStartButtonEnabled = true;
+        }
+
+        public void Report(double value)
+        {
+            model.Progess = value;
         }
 
         private void SourceDirBrowseButton_Click(object sender, RoutedEventArgs e)
