@@ -24,21 +24,21 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Source directory" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="10" Text="{Binding SourceDirectory}"/>
-        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Margin="10" Click="SourceDirBrowseButton_Click"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="10" Text="{Binding Model.SourceDirectory}"/>
+        <Button Grid.Row="0" Grid.Column="2" Content="Browse" Margin="10" Command="{Binding BrowseSourceDirCommand}"/>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Search pattern" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="10" Text="{Binding SearchPattern}"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="10" Text="{Binding Model.SearchPattern}"/>
 
         <Label Grid.Row="2" Grid.Column="0" Content="Skip files, which contain" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="10" Text="{Binding SkipPattern, Mode=TwoWay}"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="10" Text="{Binding Model.SkipPattern, Mode=TwoWay}"/>
 
         <Label Grid.Row="3" Grid.Column="0" Content="Output file" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="3" Grid.Column="1" Margin="10" Text="{Binding OutputFile}"/>
-        <Button Grid.Row="3" Grid.Column="2" Content="Browse" Margin="10" Click="OutputFileBrowseButton_Click"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="10" Text="{Binding Model.OutputFile}"/>
+        <Button Grid.Row="3" Grid.Column="2" Content="Browse" Margin="10" Command="{Binding BrowseOutputFileCommand}"/>
 
-        <ProgressBar Grid.Row="4" Grid.ColumnSpan="3"  Margin="20,10,20,10" Value="{Binding Progess, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Height="20"/>
-        <Label Grid.Row="5" Grid.ColumnSpan="3"  Margin="20,10,20,10" Content="{Binding Status, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold"/>
-        <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="20,0,20,15" Content="Start" Click="StartButton_Click" Height="20" IsEnabled="{Binding IsStartButtonEnabled}"/>
+        <Label Grid.Row="4" Grid.ColumnSpan="3"  Margin="20,10,20,10" Content="{Binding Model.Status, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold"/>
+        <ProgressBar Grid.Row="5" Grid.ColumnSpan="3"  Margin="20,10,20,10" Value="{Binding Model.Progess, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="20"/>
+        <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="20,0,20,15" Content="Start" Height="20" IsEnabled="{Binding Model.IsStartButtonEnabled}" Command="{Binding StartCommand}"/>
     </Grid>
 </Window>
