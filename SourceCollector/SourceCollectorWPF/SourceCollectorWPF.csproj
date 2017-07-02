@@ -63,7 +63,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BusinessLogic\FileCollector.cs" />
+    <Compile Include="BusinessLogic\FileHandler.cs" />
+    <Compile Include="BusinessLogic\SyntaxHighlighting\FileExtensionToLexerMapper.cs" />
+    <Compile Include="BusinessLogic\SyntaxHighlighting\HighlightingFailedException.cs" />
+    <Compile Include="BusinessLogic\SyntaxHighlighting\ISyntaxHighlighter.cs" />
+    <Compile Include="BusinessLogic\SyntaxHighlighting\RESTHighlighter.cs" />
+    <Compile Include="BusinessLogic\SyntaxHighlighting\SyntaxHighlighterFactory.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -95,6 +100,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\FileToLexerMapping.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

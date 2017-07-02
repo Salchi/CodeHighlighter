@@ -26,7 +26,7 @@ namespace SourceCollectorWPF.Views
         {
             try
             {
-                var numberOfFiles = await new FileCollector().CopyContents(model.SourceDirectory, model.SearchPattern, model.SkipPattern, model.OutputFile);
+                var numberOfFiles = await new FileHandler().CreateHighlightedHtmlOfContents(model.SourceDirectory, model.SearchPattern, model.SkipPattern, model.OutputFile);
                 model.Status = $"Copied content of {numberOfFiles} files to '{model.OutputFile}'";
             }
             catch(Exception ex)

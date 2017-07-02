@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SourceCollectorWPF.BusinessLogic.SyntaxHighlighting;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,37 +7,46 @@ using System.Threading.Tasks;
 
 namespace SourceCollectorWPF.BusinessLogic
 {
-    internal class FileCollector
+    internal class FileHandler
     {
-        public Task<int> CopyContents(string sourceDirectory, string searchPattern, string skipPattern, string outputFile)
+        public async Task CreateHighlightedHtmlOfContents(string sourceDirectory, string searchPattern, string skipPattern, string outputFile)
         {
-            return Task.Factory.StartNew(() =>
+            try
             {
                 if (string.IsNullOrEmpty(sourceDirectory) || string.IsNullOrEmpty(outputFile))
                 {
-                    return 0;
+                    return;
                 }
 
                 File.WriteAllText(outputFile, "");
 
                 var files = GetAllFilesIn(sourceDirectory, searchPattern, skipPattern);
-
-                foreach (var file in files)
+                using (var fileExtensionToLexerMapper = new FileExtensionToLexerMapper())
                 {
-                    var lineBreaks = $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
-                    File.AppendAllText(outputFile, $"{lineBreaks}{Path.GetFileName(file)}{lineBreaks}");
-                    File.AppendAllText(outputFile, File.ReadAllText(file));
-                }
+                    foreach (var file in files)
+                    {
+                        var lineBreaks = $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
+                        var fileContent = File.ReadAllText(file);
 
-                return files.Count;
-            });
+                        File.AppendAllText(outputFile, $"{lineBreaks}{Path.GetFileName(file)}{lineBreaks}");
+                        File.AppendAllText(outputFile,
+                            await SyntaxHighlighterFactory.CreateNew(
+                                await fileExtensionToLexerMapper.Map(Path.GetExtension(file))
+                            ).HighlightCodeAsync(fileContent));
+                    }
+                }
+            }
+            catch (HighlightingFailedException ex)
+            {
+                var msg = ex;
+            }
         }
 
         private string[] PatternToArray(string pattern)
         {
             return pattern.Split('|');
         }
-        private ICollection<string> GetAllFilesIn(string path, string searchPattern, string skipPattern)
+        public ICollection<string> GetAllFilesIn(string path, string searchPattern, string skipPattern)
         {
             var files = new List<string>();
             if (!Directory.Exists(path))
