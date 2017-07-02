@@ -40,7 +40,10 @@ namespace SourceCollectorWPF.ViewModels
 
         private void DoBrowseOutputFile()
         {
-            OpenFileDialog dialog = new OpenFileDialog();
+            OpenFileDialog dialog = new OpenFileDialog()
+            {
+                Filter = "Html files|*.html;*.xhtml;*.htm"
+            };
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
