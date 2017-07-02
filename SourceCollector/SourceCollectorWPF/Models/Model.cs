@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace SourceCollectorWPF
+namespace SourceCollectorWPF.Models
 {
     internal class Model : INotifyPropertyChanged
     {

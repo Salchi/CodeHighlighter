@@ -1,8 +1,10 @@
-﻿using System;
+﻿using SourceCollectorWPF.BusinessLogic;
+using SourceCollectorWPF.Models;
+using System;
 using System.Windows;
 using System.Windows.Forms;
 
-namespace SourceCollectorWPF
+namespace SourceCollectorWPF.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

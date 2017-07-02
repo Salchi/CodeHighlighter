@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SourceCollectorWPF
+namespace SourceCollectorWPF.BusinessLogic
 {
     internal class FileCollector
     {
