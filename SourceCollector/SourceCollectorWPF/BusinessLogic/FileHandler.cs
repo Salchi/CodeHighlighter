@@ -12,10 +12,8 @@ namespace SourceCollectorWPF.BusinessLogic
     {
         public async Task<(int totalFiles, int handledFiles)> CreateHighlightedHtmlOfContentsAsync(string sourceDirectory, string searchPattern, string skipPattern, string outputFile, IProgress<double> progress)
         {
-            if (string.IsNullOrEmpty(sourceDirectory) || string.IsNullOrEmpty(outputFile))
-            {
-                return (-1,0);
-            }
+            EnsureNotNullOrEmpty(sourceDirectory, nameof(sourceDirectory));
+            EnsureNotNullOrEmpty(outputFile, nameof(outputFile));
 
             File.WriteAllText(outputFile, "");
 
@@ -39,6 +37,14 @@ namespace SourceCollectorWPF.BusinessLogic
             catch (Exception) { }
 
             return (totalFiles, handledFiles);
+        }
+
+        private void EnsureNotNullOrEmpty(string param, string name)
+        {
+            if (string.IsNullOrEmpty(param))
+            {
+                throw new ArgumentException($"{name} can not be null or empty");
+            }
         }
 
         private async Task HandleFile(string outputFile, FileExtensionToLexerMapper fileExtensionToLexerMapper, string file)

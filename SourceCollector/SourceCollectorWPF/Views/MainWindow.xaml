@@ -39,6 +39,6 @@
 
         <Label Grid.Row="4" Grid.ColumnSpan="3"  Margin="20,10,20,10" Content="{Binding Model.Status, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold"/>
         <ProgressBar Grid.Row="5" Grid.ColumnSpan="3"  Margin="20,10,20,10" Value="{Binding Model.Progess, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="20"/>
-        <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="20,0,20,15" Content="Start" Height="20" IsEnabled="{Binding Model.IsStartButtonEnabled}" Command="{Binding StartCommand}"/>
+        <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="20,0,20,15" Content="Start" Height="20" Command="{Binding StartCommand}"/>
     </Grid>
 </Window>

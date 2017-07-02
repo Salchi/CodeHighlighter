@@ -44,10 +44,10 @@ namespace SourceCollectorWPF.Models
             set { SetProperty(ref status, value); }
         }
 
-        private bool isStartButtonEnabled;
-        public bool IsStartButtonEnabled {
-            get { return isStartButtonEnabled; }
-            set { SetProperty(ref isStartButtonEnabled, value); }
+        private bool isWorking;
+        public bool IsWorking {
+            get { return isWorking; }
+            set { SetProperty(ref isWorking, value); }
         }
     }
 }

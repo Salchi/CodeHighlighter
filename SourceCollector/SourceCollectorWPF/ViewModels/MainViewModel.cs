@@ -1,4 +1,5 @@
 ﻿using Prism.Commands;
+using SourceCollectorWPF.Adapters;
 using SourceCollectorWPF.BusinessLogic;
 using SourceCollectorWPF.Models;
 using System;
@@ -13,7 +14,7 @@ namespace SourceCollectorWPF.ViewModels
     class MainViewModel : IProgress<double>
     {
         public MainModel Model { get; set; }
-        public DelegateCommand StartCommand { get; set; }
+        public AutoCanExecuteCommandAdapter StartCommand { get; set; }
         public DelegateCommand BrowseSourceDirCommand { get; set; }
         public DelegateCommand BrowseOutputFileCommand { get; set; }
 
@@ -22,10 +23,17 @@ namespace SourceCollectorWPF.ViewModels
             Model = new MainModel()
             {
                 SkipPattern = "bootstrap|jquery",
-                IsStartButtonEnabled = true
+                IsWorking = false
             };
 
-            StartCommand = new DelegateCommand(async () => await DoStart(), () => Model.IsStartButtonEnabled);
+            StartCommand = new AutoCanExecuteCommandAdapter(
+                new DelegateCommand(async () => await DoStart(), () =>
+                    !Model.IsWorking &&
+                    !string.IsNullOrEmpty(Model.SourceDirectory) &&
+                    !string.IsNullOrEmpty(Model.OutputFile)
+                )
+            );
+
             BrowseSourceDirCommand = new DelegateCommand(DoBrowseSourceDir);
             BrowseOutputFileCommand = new DelegateCommand(DoBrowseOutputFile);
         }
@@ -34,7 +42,7 @@ namespace SourceCollectorWPF.ViewModels
         {
             OpenFileDialog dialog = new OpenFileDialog();
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
                 Model.OutputFile = dialog.FileName;
             }
@@ -52,7 +60,7 @@ namespace SourceCollectorWPF.ViewModels
 
         private async Task DoStart()
         {
-            Model.IsStartButtonEnabled = false;
+            Model.IsWorking = true;
             Model.Progess = 0.0;
             Model.Status = "";
 
@@ -73,7 +81,7 @@ namespace SourceCollectorWPF.ViewModels
                 Model.Status = $"Finsihed! [{handledFiles}/{totalFiles}]";
             }
 
-            Model.IsStartButtonEnabled = true;
+            Model.IsWorking = false;
         }
 
         public void Report(double value)
