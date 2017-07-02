@@ -29,17 +29,22 @@ namespace SourceCollectorWPF.Views
             model.Progess = 0.0;
             model.Status = "";
 
-            try
-            {
-                await new FileHandler().CreateHighlightedHtmlOfContentsAsync(model.SourceDirectory, model.SearchPattern,
-                    model.SkipPattern, model.OutputFile, this);
+            (var totalFiles, var handledFiles) = await new FileHandler().CreateHighlightedHtmlOfContentsAsync(model.SourceDirectory, model.SearchPattern,
+                model.SkipPattern, model.OutputFile, this);
 
-                model.Status = "Finsihed!";
-            }
-            catch (Exception)
+            if (handledFiles < totalFiles)
             {
-                model.Status = "Finsihed with an error.";
+                model.Status = $"Finsihed with an error. [{handledFiles}/{totalFiles}]";
             }
+            else if (totalFiles < 0)
+            {
+                model.Status = $"Any input Parameter is not correct!";
+            }
+            else
+            {
+                model.Status = $"Finsihed! [{handledFiles}/{totalFiles}]";
+            }
+
             model.IsStartButtonEnabled = true;
         }
 

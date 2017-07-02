@@ -10,11 +10,11 @@ namespace SourceCollectorWPF.BusinessLogic
 {
     internal class FileHandler
     {
-        public async Task CreateHighlightedHtmlOfContentsAsync(string sourceDirectory, string searchPattern, string skipPattern, string outputFile, IProgress<double> progress)
+        public async Task<(int totalFiles, int handledFiles)> CreateHighlightedHtmlOfContentsAsync(string sourceDirectory, string searchPattern, string skipPattern, string outputFile, IProgress<double> progress)
         {
             if (string.IsNullOrEmpty(sourceDirectory) || string.IsNullOrEmpty(outputFile))
             {
-                return;
+                return (-1,0);
             }
 
             File.WriteAllText(outputFile, "");
@@ -23,23 +23,34 @@ namespace SourceCollectorWPF.BusinessLogic
             var totalFiles = files.Count;
             var handledFiles = 0;
 
-            using (var fileExtensionToLexerMapper = new FileExtensionToLexerMapper())
+            try
             {
-                foreach (var file in files)
+                using (var fileExtensionToLexerMapper = new FileExtensionToLexerMapper())
                 {
-                    var lineBreaks = $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
-                    var fileContent = File.ReadAllText(file);
+                    foreach (var file in files)
+                    {
+                        await HandleFile(outputFile, fileExtensionToLexerMapper, file);
 
-                    File.AppendAllText(outputFile, $"{lineBreaks}{Path.GetFileName(file)}{lineBreaks}");
-                    File.AppendAllText(outputFile,
-                        await SyntaxHighlighterFactory.CreateNew(
-                            await fileExtensionToLexerMapper.Map(Path.GetExtension(file))
-                        ).HighlightCodeAsync(fileContent));
-
-                    handledFiles++;
-                    progress.Report(handledFiles * 100.0 / totalFiles);
+                        handledFiles++;
+                        progress.Report(handledFiles * 100.0 / totalFiles);
+                    }
                 }
             }
+            catch (Exception) { }
+
+            return (totalFiles, handledFiles);
+        }
+
+        private async Task HandleFile(string outputFile, FileExtensionToLexerMapper fileExtensionToLexerMapper, string file)
+        {
+            var lineBreaks = $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
+            var fileContent = File.ReadAllText(file);
+
+            File.AppendAllText(outputFile, $"{lineBreaks}{Path.GetFileName(file)}{lineBreaks}");
+            File.AppendAllText(outputFile,
+                await SyntaxHighlighterFactory.CreateNew(
+                    await fileExtensionToLexerMapper.Map(Path.GetExtension(file))
+                ).HighlightCodeAsync(fileContent));
         }
 
         private string[] PatternToArray(string pattern)
@@ -49,23 +60,28 @@ namespace SourceCollectorWPF.BusinessLogic
         public ICollection<string> GetAllFilesIn(string path, string searchPattern, string skipPattern)
         {
             var files = new List<string>();
-            if (!Directory.Exists(path))
-            {
-                return files;
-            }
 
-            var skipPatterns = PatternToArray(string.IsNullOrEmpty(skipPattern) ? string.Empty : skipPattern);
-
-            foreach (var pattern in PatternToArray(string.IsNullOrEmpty(searchPattern) ? "*" : searchPattern))
+            try
             {
-                foreach (string file in Directory.EnumerateFiles(path, pattern, SearchOption.AllDirectories))
+                if (!Directory.Exists(path))
                 {
-                    if (skipPattern.Length > 0 && !skipPatterns.Any(x => file.Contains(x)))
+                    return files;
+                }
+
+                var skipPatterns = PatternToArray(string.IsNullOrEmpty(skipPattern) ? string.Empty : skipPattern);
+
+                foreach (var pattern in PatternToArray(string.IsNullOrEmpty(searchPattern) ? "*" : searchPattern))
+                {
+                    foreach (string file in Directory.EnumerateFiles(path, pattern, SearchOption.AllDirectories))
                     {
-                        files.Add(file);
+                        if (skipPattern.Length > 0 && !skipPatterns.Any(x => file.Contains(x)))
+                        {
+                            files.Add(file);
+                        }
                     }
                 }
             }
+            catch (Exception) { }
 
             return files;
         }
