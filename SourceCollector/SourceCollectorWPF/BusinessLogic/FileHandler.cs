@@ -49,14 +49,14 @@ namespace SourceCollectorWPF.BusinessLogic
 
         private async Task HandleFile(string outputFile, FileExtensionToLexerMapper fileExtensionToLexerMapper, string file)
         {
-            var lineBreaks = $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
             var fileContent = File.ReadAllText(file);
 
-            File.AppendAllText(outputFile, $"{lineBreaks}{Path.GetFileName(file)}{lineBreaks}");
+            File.AppendAllText(outputFile, $"<h2>{Path.GetFileName(file)}</h2>");
             File.AppendAllText(outputFile,
                 await SyntaxHighlighterFactory.CreateNew(
                     await fileExtensionToLexerMapper.Map(Path.GetExtension(file))
-                ).HighlightCodeAsync(fileContent));
+                ).HighlightCodeAsync(fileContent)
+            );
         }
 
         private string[] PatternToArray(string pattern)
