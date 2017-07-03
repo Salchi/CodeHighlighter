@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
-namespace SourceCollectorWPF.Models
+namespace CodeHighlighter.Models
 {
     internal class MainModel : BindableBase
     {

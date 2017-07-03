@@ -1,7 +1,7 @@
 ﻿using Prism.Commands;
-using SourceCollectorWPF.Adapters;
-using SourceCollectorWPF.BusinessLogic;
-using SourceCollectorWPF.Models;
+using CodeHighlighter.Adapters;
+using CodeHighlighter.BusinessLogic;
+using CodeHighlighter.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SourceCollectorWPF.ViewModels
+namespace CodeHighlighter.ViewModels
 {
     class MainViewModel : IProgress<double>
     {

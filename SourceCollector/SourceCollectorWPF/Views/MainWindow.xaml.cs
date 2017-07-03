@@ -1,11 +1,11 @@
-﻿using SourceCollectorWPF.BusinessLogic;
-using SourceCollectorWPF.Models;
-using SourceCollectorWPF.ViewModels;
+﻿using CodeHighlighter.BusinessLogic;
+using CodeHighlighter.Models;
+using CodeHighlighter.ViewModels;
 using System;
 using System.Windows;
 using System.Windows.Forms;
 
-namespace SourceCollectorWPF.Views
+namespace CodeHighlighter.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

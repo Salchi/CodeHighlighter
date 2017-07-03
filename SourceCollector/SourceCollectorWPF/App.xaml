@@ -1,7 +1,7 @@
-﻿<Application x:Class="SourceCollectorWPF.App"
+﻿<Application x:Class="CodeHighlighter.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:SourceCollectorWPF"
+             xmlns:local="clr-namespace:CodeHighlighter"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
          

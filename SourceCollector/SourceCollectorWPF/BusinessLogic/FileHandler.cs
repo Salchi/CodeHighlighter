@@ -1,4 +1,4 @@
-﻿using SourceCollectorWPF.BusinessLogic.SyntaxHighlighting;
+﻿using CodeHighlighter.BusinessLogic.SyntaxHighlighting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SourceCollectorWPF.BusinessLogic
+namespace CodeHighlighter.BusinessLogic
 {
     internal class FileHandler
     {

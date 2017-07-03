@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace SourceCollectorWPF.BusinessLogic.SyntaxHighlighting
+namespace CodeHighlighter.BusinessLogic.SyntaxHighlighting
 {
     class FileExtensionToLexerMapper : IDisposable
     {
