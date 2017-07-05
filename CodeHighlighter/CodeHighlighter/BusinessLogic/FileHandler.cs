@@ -1,42 +1,84 @@
 ﻿using CodeHighlighter.BusinessLogic.SyntaxHighlighting;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeHighlighter.BusinessLogic
 {
     internal class FileHandler
     {
-        public async Task<(int totalFiles, int handledFiles)> CreateHighlightedHtmlOfContentsAsync(string sourceDirectory, string searchPattern, string skipPattern, string outputFile, IProgress<double> progress)
+        public Task<(int totalFiles, int handledFiles)> CreateHighlightedHtmlOfContentsAsync(string sourceDirectory, string searchPattern, 
+            string skipPattern, string outputFile, IProgress<double> progress)
         {
-            EnsureNotNullOrEmpty(sourceDirectory, nameof(sourceDirectory));
-            EnsureNotNullOrEmpty(outputFile, nameof(outputFile));
-
-            File.WriteAllText(outputFile, "");
-
-            var files = GetAllFilesIn(sourceDirectory, searchPattern, skipPattern);
-            var totalFiles = files.Count;
-            var handledFiles = 0;
-
-            try
+            return Task.Factory.StartNew(() =>
             {
-                using (var fileExtensionToLexerMapper = new FileExtensionToLexerMapper())
-                {
-                    foreach (var file in files)
-                    {
-                        await HandleFile(outputFile, fileExtensionToLexerMapper, file);
+                EnsureNotNullOrEmpty(sourceDirectory, nameof(sourceDirectory));
+                EnsureNotNullOrEmpty(outputFile, nameof(outputFile));
 
-                        handledFiles++;
-                        progress.Report(handledFiles * 100.0 / totalFiles);
+                File.WriteAllText(outputFile, "");
+
+                var files = GetAllFilesIn(sourceDirectory, searchPattern, skipPattern).ToList();
+                var totalFiles = files.Count;
+                var handledFiles = 0;
+
+                try
+                {
+                    var highlightedFiles = HighlightAllFilesInParallel(files, progress);
+                    handledFiles = highlightedFiles.Count;
+
+                    foreach (var kvp in highlightedFiles.OrderBy(x => x.Key))
+                    {
+                        PrintFileContent(outputFile, kvp.Value.file, kvp.Value.content);
                     }
                 }
-            }
-            catch (Exception) { }
+                catch (Exception) {}
 
-            return (totalFiles, handledFiles);
+                return (totalFiles, handledFiles);
+            });
+        }
+
+        private void PrintFileContent(string outputFile, string inputFile, string content)
+        {
+            File.AppendAllText(outputFile, $"<h2>{Path.GetFileName(inputFile)}</h2>");
+            File.AppendAllText(outputFile, content);
+        }
+
+        private IDictionary<int, (string file, string content)> HighlightAllFilesInParallel(List<string> files, IProgress<double> progress)
+        {
+            using (var fileExtensionToLexerMapper = new FileExtensionToLexerMapper())
+            {
+                var locker = new object();
+                var handledFiles = 0;
+                var totalFiles = files.Count;
+                var result = new ConcurrentDictionary<int, (string, string)>();
+
+                Parallel.ForEach(files, file =>
+                {
+                    var fileContent = File.ReadAllText(file);
+                    int index;
+
+                    lock (locker)
+                    {
+                        index = files.IndexOf(file);
+                    }
+
+                    var tuple = (file, SyntaxHighlighterFactory.CreateNew(
+                        fileExtensionToLexerMapper.MapAsync(Path.GetExtension(file)).Result
+                    ).HighlightCodeAsync(fileContent).Result);
+
+                    result.TryAdd(index, tuple);
+
+                    Interlocked.Increment(ref handledFiles);
+                    progress.Report(handledFiles * 100.0 / totalFiles);
+                });
+
+                return result;
+            }
         }
 
         private void EnsureNotNullOrEmpty(string param, string name)
@@ -45,18 +87,6 @@ namespace CodeHighlighter.BusinessLogic
             {
                 throw new ArgumentException($"{name} can not be null or empty");
             }
-        }
-
-        private async Task HandleFile(string outputFile, FileExtensionToLexerMapper fileExtensionToLexerMapper, string file)
-        {
-            var fileContent = File.ReadAllText(file);
-
-            File.AppendAllText(outputFile, $"<h2>{Path.GetFileName(file)}</h2>");
-            File.AppendAllText(outputFile,
-                await SyntaxHighlighterFactory.CreateNew(
-                    await fileExtensionToLexerMapper.Map(Path.GetExtension(file))
-                ).HighlightCodeAsync(fileContent)
-            );
         }
 
         private string[] PatternToArray(string pattern)

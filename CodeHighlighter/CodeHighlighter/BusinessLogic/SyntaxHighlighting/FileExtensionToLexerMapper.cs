@@ -23,7 +23,7 @@ namespace CodeHighlighter.BusinessLogic.SyntaxHighlighting
             doc = XDocument.Load(stream);
         }
 
-        public Task<string> Map(string fileExtension)
+        public Task<string> MapAsync(string fileExtension)
         {
             return Task.Factory.StartNew(() =>
             {
