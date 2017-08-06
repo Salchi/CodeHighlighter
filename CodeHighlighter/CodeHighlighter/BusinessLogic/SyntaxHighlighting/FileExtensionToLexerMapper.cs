@@ -28,7 +28,7 @@ namespace CodeHighlighter.BusinessLogic.SyntaxHighlighting
             return Task.Factory.StartNew(() =>
             {
                 return doc.Root.Elements()
-                .Where(x => x.Attribute(AttrFileExtension).Value.Replace(" ", "").Split(',').Contains(fileExtension.Replace(".", "")))
+                .Where(x => x.Attribute(AttrFileExtension).Value.Replace(" ", "").ToLower().Split(',').Contains(fileExtension.Replace(".", "").ToLower()))
                 .Select(x => x.Attribute(AttrLexerShortName).Value).FirstOrDefault();
             });
         }

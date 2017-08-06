@@ -2,10 +2,10 @@
 <!-- see http://pygments.org/docs/lexers/ for all available lexers and its short names-->
 <mappings>
   <mapping file-extension="php" lexer-short-name="php"/>
-  <mapping file-extension="html, htm, xhtml, inc" lexer-short-name="html"/>
+  <mapping file-extension="html, htm, xhtml, inc, cshtml" lexer-short-name="html"/>
   <mapping file-extension="js, jsm" lexer-short-name="js"/>
   <mapping file-extension="java" lexer-short-name="java"/>
   <mapping file-extension="cs" lexer-short-name="c#"/>
   <mapping file-extension="css" lexer-short-name="css"/>
-  <mapping file-extension="xml, xsl, rss, xslt, xsd, wsdl, wsf" lexer-short-name="xml"/>
+  <mapping file-extension="xml, xsl, rss, xslt, xsd, wsdl, wsf, resx" lexer-short-name="xml"/>
 </mappings>
